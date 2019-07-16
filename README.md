@@ -14,11 +14,9 @@
       - C# for Visual Studio Code
       - Vetur (vue tooling for VS Code)
   - Node.js
-  - 本Web画面のソースを以下のGithubからダウンロードし、任意のフォルダに保存
-    - ClientApp
-      - https://github.com/camelrush/ksaplabobooks.git
-    - ServerApp
-      - https://github.com/camelrush/ksaplabobookslambda.git 
+  - 本レポジトリを任意のフォルダにダウンロード
+    - ksaplabobooks : Webアプリケーション(vue)
+    - updateNotify_AwsLambda : Lambda関数
 
 - VisualStudioCodeでダウンロードしたフォルダを開く。
 - 「ターミナルを開く」を選択し、以下のコマンドを実行。
