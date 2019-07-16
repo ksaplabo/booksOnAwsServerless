@@ -1,0 +1,64 @@
+#loading {
+    display: table;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgb(255, 255, 255) ;
+    opacity: 0.5;
+  }
+   
+#loading .loadingMsg {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+    padding-top: 140px;
+    background: url('/public/image/gif-load.gif') center center no-repeat;
+}
+
+.multiline-text {
+  overflow: hidden;
+  /*height: 9em; /* 2em（行）x line-heightの1.8 */
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.modal .modal-content {
+  overflow-y: initial !important;
+}
+.modal .modal-header {
+	height: 10vh;
+}
+.modal .modal-body {
+	height: 60vh/* calc(100vh - 160px) */;
+	overflow-y:auto;
+}
+.modal .modal-footer {
+	height: 5vh;
+}
+
+.modal .modal-body::-webkit-scrollbar {
+  all:unset;
+  width: 16px;
+  background: transparent;
+}
+ 
+.modal .modal-body::-webkit-scrollbar-track {
+  all:unset;
+  -webkit-box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+  border-radius: 12px;
+  background: transparent;
+}
+ 
+.modal .modal-body::-webkit-scrollbar-thumb {
+  all:unset;
+  -webkit-box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
+  border-radius: 12px;
+  background: transparent;
+}
+ 
+.modal .modal-body::-webkit-scrollbar-thumb:hover {
+  -webkit-box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+  background: transparent;
+}

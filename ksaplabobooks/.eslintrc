@@ -1,0 +1,5 @@
+  globals: {
+    "$": true,
+    "jQuery": true,
+    "jquery": true,
+  }
