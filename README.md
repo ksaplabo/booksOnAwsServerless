@@ -16,7 +16,8 @@
   - Node.js
   - 本レポジトリを任意のフォルダにダウンロード
     - ksaplabobooks : Webアプリケーション(vue)
-    - updateNotify_AwsLambda : Lambda関数
+    - update_AwsLambda : 更新処理(Lambda関数)
+    - updateNotify_AwsLambda : 更新通知処理(Lambda関数)
 
 - VisualStudioCodeでダウンロードしたフォルダを開く。
 - 「ターミナルを開く」を選択し、以下のコマンドを実行。
@@ -186,10 +187,14 @@ VUE_APP_AWS_COGNITO_USERPOOL_CLIENT_ID=xxxxxxxxxxxxxxxxxxxxxxxx #4
 *node_modules/
 ```
 これにより、node.jsのライブラリモジュールフォルダである、「node_modules」フォルダがgit管理から除外される。
-
-- `package.json` を添付 `ksaplabobookslambda` プロジェクトの同ファイルで上書きする。
-- `app.js` を添付 `ksaplabobookslambda` プロジェクトの同ファイルで上書きする。  
-  ※ファイル内の「★テーブル名★」のところを、前述のdynamoDB内に作成したテーブル名に変更する。
+- 添付の `update_AwsLambda` フォルダから以下３つのファイルの内容をコピーし、同名のファイルに上書きする。
+  - `package.json`
+  - `template.yml`
+  - `app.js`   
+- `app.js` 内の以下のテーブル名を、前述のdynamoDB内に作成したテーブル名に変更する。
+```
+const BOOKS_TABLE = '★テーブル名★';
+```
 
 - 画面下のコンソールを選択し、以下のコマンドを実行する。
 ```
