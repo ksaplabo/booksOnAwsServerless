@@ -1,6 +1,6 @@
 {
-  "name": "express-HelloWorld",
-  "description": "Hello World ExpressJS WebService",
+  "name": "ksaplabobooksweb",
+  "description": "ksaplabobooks WebService",
   "version": "0.0.1",
   "private": true,
   "dependencies": {

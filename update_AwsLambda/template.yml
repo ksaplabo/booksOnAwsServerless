@@ -24,11 +24,11 @@ Globals:
       Role: !Ref CodeDeployRole
       
 Resources:
-  takadaBooks:
+  ksaplabobooksfunc:
     Type: AWS::Serverless::Function
     Properties:
       Handler: index.handler
-      Runtime: nodejs8.10
+      Runtime: nodejs14.x
       Environment:
         Variables:
           NODE_ENV: production

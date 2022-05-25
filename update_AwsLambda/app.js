@@ -7,7 +7,7 @@ const BOOKS_TABLE = '★テーブル名★';
 let moment = require("moment");
 
 // 接続情報
-let docClient = new AWS.DynamoDB.DocumentClient({  region: 'ap-southeast-1' });
+let docClient = new AWS.DynamoDB.DocumentClient({  region: 'ap-northeast-1' });
 
 // CORS対策：ローカル開発の場合、アスターに変更要
 //const ALLOWED_ORIGIN = 'https://d3ufmoxaqg3js4.cloudfront.net';

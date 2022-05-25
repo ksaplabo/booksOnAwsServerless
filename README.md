@@ -21,17 +21,17 @@
 
 - VisualStudioCodeでダウンロードしたフォルダを開く。
 - 「ターミナルを開く」を選択し、以下のコマンドを実行。
-```
-> npm install --save
+``` bash
+$ npm install --save
 ```
 - エクスプローラ上にnode_modules等のフォルダが追加される。
 - 続いて、次のコマンドを実行する。  
-```
-> npm run build
+``` bash
+$ npm run build
 ```  
 - 以下のメッセージがでて、distフォルダが作成されればOK。  
   途中、Lintのエラーがあるが、無視してよし。
-```
+``` bash
 DONE  Build complete. The dist directory is ready to be deployed.
 INFO  Check out deployment instructions at https://cli.vuejs.org/guide/deployment.html
 ```
@@ -48,27 +48,28 @@ INFO  Check out deployment instructions at https://cli.vuejs.org/guide/deploymen
   - 「バケット名」：任意
   - 「リージョン」：「アジアパシフィック(東京)」
 - 「オプションの設定」画面では、そのまま「次へ」。
-- 「アクセス許可の設定」で「パブリックアクセスをすべてブロック」チェックを外して「次へ」。
 - 「確認」画面で「バケットを作成」をクリック。
+- 作成したバケットを選択し、詳細画面で「プロパティ」をクリック。
+  - 「静的ウェブサイトホスティング」で「編集」を選択。
+    - 「静的ウェブサイトホスティング」で「有効にする」を選択
+    - インデックスドキュメントには「index.html」を設定
+    - 「変更の保存」をクリック。
 - 作成したバケットを選び、フォルダ「public」を作成。
 - 作成したフォルダを選択し、「アップロード」を選択。
-- 手順「環境準備」でビルドした「dist」フォルダの内容をドラッグドロップして、「次へ」。
-- 「パブリックアクセス許可を管理する」に、「このオブジェクトに～権限を付与する」を選択して、「アップロード」をクリック。
-
-以上でS3配置は完了。ブラウザから以下のアドレスにアクセスして、サインインのページが表示されればOK。  
-　[http://[バケット名].s3-ap-northeast-1.amazonaws.com/public/pages/signin.html]([http://[バケット名].s3-ap-northeast-1.amazonaws.com/public/pages/signin.html])
-
+- 手順「環境準備」でビルドした「dist」フォルダの内容をドラッグドロップして、「アップロード」をクリック。
 
 ### Cloud Front を設定
 #### S3に格納したWebページをCloudFrontを介して配信し、HTTPSアクセスできるようにします。
 - サービスから「CloudFront」を選択。
-- 上部メニューから「Create Distribution」をクリック。
-- 「Web」エリアの「Get Start」をクリック。
-- 「Create Distribution」画面で「Origin Domain Name」に、前ページのバケットを選択。「Create Distribution」ボタンをクリック。
-- Distributionの一覧で「Status」が「InProgress」から、「Deployed」になるまで待つ。
-- 作成されたDistributionを選び、「Restrictions」をクリック。その後、「Edit」ボタンをクリックする。
-- 「Enable Geo-Restriction」に「Yes」を指定。WhiteListに対して、下部「Countries」に「JP—JAPAN」をリスト追加し、「Yes,Edit」をクリックする。  
-※これにより、海外からの不正なアクセスなどを制限できる  
+- 上部メニューから「ディストリビューションを作成」をクリック。
+  - 「オリジナルドメイン」に作成したS3バケット（xxxxxxxx.s3.amazonaws.com）を指定
+  - 「S3バケットアクセス」で「はい、OAIを使用します」を選択
+    - 「オリジンアクセスアイデンティティ」では「新しいOAIを作成」をクリック
+    - 「バケットポリシー」には「はい、バケットポリシーを自動で更新します」を選択
+  - 「ディストリビューションを作成」をクリックする。
+- 作成されたディストリビューションを選び「地理的制限」をクリック。その後、「編集」ボタンをクリックする。
+  - 「制限タイプ」で「許可リスト」を選択し、「国」に「日本」を指定。  
+     ※これにより、海外からの不正なアクセスなどを制限できる  
 
 以上でCloudFront設定は完了です。ブラウザから、CloudFrontのDomainNameに示されたアドレスに対してアクセスし、サインインページが表示されればOK。
 　[https://[DomainName(～.cloudfront.net)]/public/pages/signin.html](https://[DomainName(～.cloudfront.net)]/public/pages/signin.html)
@@ -106,7 +107,7 @@ INFO  Check out deployment instructions at https://cli.vuejs.org/guide/deploymen
 ### WebアプリにCognito情報を設定(Visual Studio Code)
 #### すでにアップロードしたWebサイトのソースを再度開いて Cognito情報を設定し、サインアップとの関連付けを行います。
 - 自クライアントPCでVsCodeのソースから、「.env」ファイルを開き、以下の情報を設定して保存する。
-```
+``` js
 VUE_APP_AWS_COGNITO_REGION="ap-northeast-1"  #1
 VUE_APP_AWS_COGNITO_ID_POOL_ID=ap-northeast-1:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxx  #2 
 VUE_APP_AWS_COGNITO_USERPOOL_ID=ap-northeast-1_xxxxxxxx  #3
@@ -117,9 +118,9 @@ VUE_APP_AWS_COGNITO_USERPOOL_CLIENT_ID=xxxxxxxxxxxxxxxxxxxxxxxx #4
 3. 「ユーザプールの管理」、全般タブの、「プールID」を設定
 4. 「ユーザプールの管理」、アプリクライアントタブの、「アプリクライアントID」を設定
 - ターミナルを開き、ビルドコマンドを実行。
-```
-　>npm run build
-```
+  ``` bash
+  $ npm run build
+  ```
 「dist」フォルダにビルド結果が保存される。
 - 手順①を参考に、S3にファイルを再アップする。この時S3「public」フォルダ内の既存ファイルは全消しのうえ、アップロードしなおすこと。  
 また、初回と同様に、パブリックアクセス件を付与することに注意。
@@ -146,15 +147,29 @@ VUE_APP_AWS_COGNITO_USERPOOL_CLIENT_ID=xxxxxxxxxxxxxxxxxxxxxxxx #4
 - 左のメニューから、「テーブルの作成」をクリック。
 - 任意のテーブル名、プライマリキーに「title」(文字列)を設定して、「作成」ボタンをクリックする。
 - 「項目の作成」ボタンをクリックし、「Tree」を「Text」に変更し、以下のJSONデータを張り付けて「保存」する。
-```
+``` json
 {
- "description": "柔軟な開発を可能にするインフラ構築・運用の勘所。ブラウザでの設定もコマンド操作も丁寧に解説。",
- "imgUrl": "https://books.google.com/books/content?id=6LayjgEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
- "isbn": "9784774176734",
- "rentalDate": null,
- "rentalStatus": null,
- "rentalUser": null,
- "title": "Amazon Web Services 実践入門"
+  "title": {
+    "S": "Amazon Web Services 実践入門"
+  },
+  "description": {
+    "S": "柔軟な開発を可能にするインフラ構築・運用の勘所。ブラウザでの設定もコマンド操作も丁寧に解説。"
+  },
+  "imgUrl": {
+    "S": "https://books.google.com/books/content?id=6LayjgEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
+  },
+  "isbn": {
+    "S": "9784774176734"
+  },
+  "rentalDate": {
+    "NULL": true
+  },
+  "rentalStatus": {
+    "NULL": true
+  },
+  "rentalUser": {
+    "NULL": true
+  }
 }
 ```
 - 続いて貸し出し履歴テーブルを作成します。引き続き「テーブルの作成」をクリック。
@@ -165,7 +180,7 @@ VUE_APP_AWS_COGNITO_USERPOOL_CLIENT_ID=xxxxxxxxxxxxxxxxxxxxxxxx #4
 - サービスの一覧から「AWS CodeStar」を選択する。
 - 「新規プロジェクトの作成」をクリックする。
 - プロジェクトのテンプレートから、以下を選択する。  
-`Express.js + ウェブアプリケーション + AWS Lambda`
+`Express.js + ウェブサービス + AWS Lambda`
 - 「プロジェクト詳細」画面で「プロジェクト名」を任意に設定
 - 「レポジトリ」は「AWS CodeCommit」を選択
 - そのまま「次へ」をクリックし、「プロジェクトを作成する」をクリックする。
@@ -178,53 +193,53 @@ VUE_APP_AWS_COGNITO_USERPOOL_CLIENT_ID=xxxxxxxxxxxxxxxxxxxxxxxx #4
 #### AWS Cloud9を起動し、LambdaからコールされるNode.jsアプリを開発する。
 - 左メニューから「IDE」を選択し、表示されるプロジェクト名で「IDEを開く」を選択。
 - 画面下のコンソールを選択し、指示どおりユーザ名とe-mailアドレスを入力してEnterを押下する。  
-```
->ec2-user:~/environment$ git config --global user.name [ユーザ名]
->ec2-user:~/environment$ git config --global user.email [e-mailアドレス]
-```
+  ``` bash
+  >ec2-user:~/environment$ git config --global user.name [ユーザ名]
+  >ec2-user:~/environment$ git config --global user.email [e-mailアドレス]
+  ```
 - プロジェクトに `.gitignore` ファイルを作成し、内容を以下のとおりとする。  
-```
-*node_modules/
-```
+  ``` js
+  *node_modules/
+  ```
 これにより、node.jsのライブラリモジュールフォルダである、「node_modules」フォルダがgit管理から除外される。
 - 添付の `update_AwsLambda` フォルダから以下３つのファイルの内容をコピーし、同名のファイルに上書きする。
   - `package.json`
   - `template.yml`
   - `app.js`   
 - `app.js` 内の以下のテーブル名を、前述のdynamoDB内に作成したテーブル名に変更する。
-```
-const BOOKS_TABLE = '★テーブル名★';
-```
+  ``` js
+  const BOOKS_TABLE = '★テーブル名★';
+  ```
 
 - 画面下のコンソールを選択し、以下のコマンドを実行する。
-```
->ec2-user:~/environment$ cd [プロジェクト名]
->ec2-user:~/environment/[プロジェクト名](master)$git add .
->ec2-user:~/environment/[プロジェクト名](master)$git commit -m 1st.
->ec2-user:~/environment/[プロジェクト名](master)$git push
-```
+  ``` bash
+  >ec2-user:~/environment$ cd [プロジェクト名]
+  >ec2-user:~/environment/[プロジェクト名](master)$git add .
+  >ec2-user:~/environment/[プロジェクト名](master)$git commit -m 1st.
+  >ec2-user:~/environment/[プロジェクト名](master)$git push
+  ```
 - これにより、githubにソースがPushされ、自動的にビルド、デブプロイが実行される。
 - CodeStar画面に切り替えると、右下に実行状況が表示される。デプロイが「成功」と表示されればOK。
 - （以下、アクセス制限の変更）
 - サービスから「IAM」を選択し、「ロール」から、「CodeStar-`[プロジェクト名]`-Exection」を選択する。
 - 下部の「境界の削除」を選択する。確認メッセージも「削除」を選択する。
 - 再びサービスを「CodeStar」の当該プロジェクトに戻し、画面右側にある、「アプリケーションのエンドポイント」のアドレスをコピー、そのアドレスに対して「/getall」を付与したアドレスに、ブラウザからアクセスする。
-```
-例）https://xxxxxx.execute-api.ap-southeast-1.amazonaws.com/Prod/getall
-```
+  ```
+  例）https://xxxxxx.execute-api.ap-southeast-1.amazonaws.com/Prod/getall
+  ```
 - この結果、dynamoDBに登録した内容がJSONで返却されれば、アプリとテーブルの関連が正しく行われている。
-```
-{"Items":[{"rentalDate":null,"isbn":"9784774176734","rentalStatus":null,"description":"柔軟な開発を可能にするインフラ構築・運用の勘所。ブラウザでの設定もコマンド操作も丁寧に解説。","rentalUser":null,"imgUrl":"https://books.google.com/books/content?id=6LayjgEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api","title":"Amazon Web Services 実践入門"}],"Count":1,"ScannedCount":1,"result":"success"}
-```  
+  ``` json
+  {"Items":[{"rentalDate":null,"isbn":"9784774176734","rentalStatus":null,"description":"柔軟な開発を可能にするインフラ構築・運用の勘所。ブラウザでの設定もコマンド操作も丁寧に解説。","rentalUser":null,"imgUrl":"https://books.google.com/books/content?id=6LayjgEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api","title":"Amazon Web Services 実践入門"}],"Count":1,"ScannedCount":1,"result":"success"}
+  ```  
 上記でエラーが出る場合は、サービス「CloudWatch」のログから、詳細を確認できるので、そちらで原因を探ってください。  
 この状態で サイトにログインすると、「Book Rental」のページに「Amazon Web Services 実践入門」が表示されており、「借りる」を一回クリックすると貸し出し中へ、「返却」をクリックすると貸し出し可能に表示が切り替わる。
 
 ### Webアプリにアプリケーションのエンドポイント情報を設定(Visual Studio Code)
 #### すでにアップロードしたWebサイトのソースを再度開いて アプリケーションのエンドポイント情報を設定し、サインアップとの関連付けを行います。
 - 自クライアントPCでVsCodeのソースから、「.env」ファイルを開き、以下の情報を設定して保存する。
-```
-VUE_APP_SAP_BOOKS_SERVICE=https://xxxxxx.execute-api.ap-southeast-1.amazonaws.com/Prod
-```
+  ``` js
+  VUE_APP_SAP_BOOKS_SERVICE=https://xxxxxx.execute-api.ap-southeast-1.amazonaws.com/Prod
+  ```
 - 手順②と同様に `npm run build` でリビルドした後、S3への再アップロード、Cloud Frontの更新を行うこと。
 - ブラウザから、Webサイトにアクセスし、貸し出し・返却、およびマスタ更新操作を確認する。
 
@@ -253,73 +268,75 @@ VUE_APP_SAP_BOOKS_SERVICE=https://xxxxxx.execute-api.ap-southeast-1.amazonaws.co
 - 「環境変数」エリアに、`キー「TZ」、値「Asia/Tokyo」` を追加する。(履歴テーブルに設定される貸出日付を、日本標準時間とする)
 - 「実行ロール」エリアにある、「既存のロール」から下部の「IAMコンソールで ～ ロールを表示します」をクリックする。
 - IAM サービス画面で「+ インラインポリシーの追加」をクリックし、JSONで以下のポリシーを記述してポリシー追加する。
-```
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "VisualEditor0",
-            "Effect": "Allow",
-            "Action": [
-                "ses:Send*",
-                "dynamodb:PutItem",
-                "dynamodb:GetShardIterator",
-                "dynamodb:DescribeStream",
-                "dynamodb:ListStreams",
-                "dynamodb:GetRecords"
-            ],
-            "Resource": "*"
-        }
-    ]
-}
-```
+  ``` json
+  {
+      "Version": "2012-10-17",
+      "Statement": [
+          {
+              "Sid": "VisualEditor0",
+              "Effect": "Allow",
+              "Action": [
+                  "ses:Send*",
+                  "dynamodb:PutItem",
+                  "dynamodb:GetShardIterator",
+                  "dynamodb:DescribeStream",
+                  "dynamodb:ListStreams",
+                  "dynamodb:GetRecords"
+              ],
+              "Resource": "*"
+          }
+      ]
+  }
+  ```
+
 以上でLambda関数の作成は終了。テストを行う場合は、以下のテストコードを作成して実行する。
-```
-{
-  "Records": [
-    {
-      "eventID": "1",
-      "eventVersion": "1.0",
-      "dynamodb": {
-        "Keys": {
-          "title": {
-            "S": "AWSによるサーバーレスアーキテクチャ"
-          }
+
+  ``` json
+  {
+    "Records": [
+      {
+        "eventID": "1",
+        "eventVersion": "1.0",
+        "dynamodb": {
+          "Keys": {
+            "title": {
+              "S": "AWSによるサーバーレスアーキテクチャ"
+            }
+          },
+          "NewImage": {
+            "rentalUser": {
+              "S": "Test User"
+            },
+            "isbn": {
+              "S": "9784798155166"
+            },
+            "rentalStatus": {
+              "S": "貸出中"
+            }
+          },
+          "OldImage": {
+            "rentalUser": {
+              "S": null
+            },
+            "isbn": {
+              "S": null
+            },
+            "rentalStatus": {
+              "S": null
+            }
+          },
+          "StreamViewType": "NEW_AND_OLD_IMAGES",
+          "SequenceNumber": "111",
+          "SizeBytes": 26
         },
-        "NewImage": {
-          "rentalUser": {
-            "S": "Test User"
-          },
-          "isbn": {
-            "S": "9784798155166"
-          },
-          "rentalStatus": {
-            "S": "貸出中"
-          }
-        },
-        "OldImage": {
-          "rentalUser": {
-            "S": null
-          },
-          "isbn": {
-            "S": null
-          },
-          "rentalStatus": {
-            "S": null
-          }
-        },
-        "StreamViewType": "NEW_AND_OLD_IMAGES",
-        "SequenceNumber": "111",
-        "SizeBytes": 26
-      },
-      "awsRegion": "us-west-2",
-      "eventName": "MODIFY",
-      "eventSourceARN": "eventsourcearn",
-      "eventSource": "aws:dynamodb"
-    }
-  ]
-}
-```
+        "awsRegion": "us-west-2",
+        "eventName": "MODIFY",
+        "eventSourceARN": "eventsourcearn",
+        "eventSource": "aws:dynamodb"
+      }
+    ]
+  }
+  ```
 
 ### SESサービスで、メール通知許可設定を行う。
 #### 自動メール配信をするためには、あらかじめSESサービス上で発信元、通知先メールアドレスに対してメール通知許可設定が必要です。SESサービスから承認メールを発信し、送信先アドレスから許可を行います。
